@@ -1,0 +1,1296 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <!-- 문서 타입 및 언어 설정 -->
+    <meta charset="UTF-8">
+    <!-- 반응형 웹을 위한 뷰포트 설정 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 페이지 제목 설정 -->
+    <title>💎 행운의 쿠폰 게임 💎</title>
+    <!-- 구글 폰트 - Noto Sans KR 로드 (한글 지원) -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
+    <!-- React 라이브러리 CDN 로드 -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <!-- ReactDOM 라이브러리 CDN 로드 -->
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <!-- Babel 트랜스파일러 CDN 로드 (JSX 변환용) -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <style>
+        /* 전체 요소 초기화 - 브라우저 기본 스타일 제거 */
+        * {
+            margin: 0;           /* 모든 요소의 외부 여백 제거 */
+            padding: 0;          /* 모든 요소의 내부 여백 제거 */
+            box-sizing: border-box; /* 패딩과 테두리를 요소 크기에 포함 */
+        }
+
+        /* 페이지 전체 배경 및 레이아웃 설정 */
+        body {
+            font-family: 'Noto Sans KR', sans-serif; /* 기본 폰트 설정 */
+            background: linear-gradient(135deg, #FFF8E1 0%, #FFECB3 50%, #FFE0B2 100%); /* 크림색 그라데이션 배경 */
+            min-height: 100vh;    /* 최소 높이를 화면 전체 높이로 설정 */
+            display: flex;        /* 플렉스박스 레이아웃 사용 */
+            justify-content: center; /* 가로 중앙 정렬 */
+            align-items: center;  /* 세로 중앙 정렬 */
+            padding: 20px;        /* 전체 여백 20px */
+        }
+
+         /* 메인 게임 컨테이너 - 슬롯머신 전체 틀 */
+         .game-container {
+             max-width: 640px;     /* 최대 너비 640px로 제한 */
+             width: 100%;          /* 너비 100% (반응형) */
+             min-height: 850px;    /* 최소 높이 850px (모든 요소가 보이도록) */
+             background: linear-gradient(145deg, #FF8C00, #FFA500, #FFB84D); /* 오렌지 그라데이션 배경 */
+             border-radius: 25px;  /* 모서리 둥글게 25px */
+             box-shadow:           /* 복합 그림자 효과 */
+                 0 15px 40px rgba(0,0,0,0.3),        /* 외부 그림자 */
+                 inset 0 0 0 3px #FFD700,            /* 내부 골드 테두리 */
+                 inset 0 0 0 6px #FF6B35,            /* 내부 오렌지 테두리 */
+                 inset 0 3px 15px rgba(255,255,255,0.4); /* 내부 하이라이트 */
+             overflow: hidden;     /* 넘치는 내용 숨김 */
+             border: 6px solid #FF6B35; /* 외부 테두리 6px */
+             position: relative;   /* 상대 위치 (자식 요소 절대 위치 기준) */
+             display: flex;        /* 플렉스박스 레이아웃 */
+             flex-direction: column; /* 세로 방향 배치 */
+         }
+
+        .header {
+            background: linear-gradient(45deg, #FF8C00, #FFA500, #FFB84D);
+            padding: 20px;
+            text-align: center;
+            color: #FFFFFF;
+            position: relative;
+            border: 6px solid #FF6B35;
+            border-radius: 25px;
+            box-shadow: 
+                0 8px 25px rgba(0,0,0,0.3),
+                inset 0 0 0 3px #FFD700,
+                inset 0 0 0 6px #FF6B35,
+                inset 0 3px 15px rgba(255,255,255,0.4);
+        }
+
+        .title {
+            font-size: 2.3em;
+            font-weight: 900;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.4);
+            margin-bottom: 8px;
+            animation: titleGlow 3s ease-in-out infinite alternate;
+        }
+
+        .subtitle {
+            font-size: 1.2em;
+            font-weight: 600;
+            opacity: 0.9;
+        }
+
+                 .slot-machine-container {
+             position: relative;
+             display: flex;
+             align-items: center;
+             justify-content: center;
+             margin: 10px;
+             padding: 10px;
+             flex: 1;
+         }
+
+         /* 스포트라이트 효과 */
+         .slot-machine-container::before {
+             content: '';
+             position: absolute;
+             top: -20px;
+             left: -20px;
+             right: -20px;
+             bottom: -20px;
+             background: radial-gradient(circle at center, 
+                 rgba(255,215,0,0.4) 0%, 
+                 rgba(255,215,0,0.2) 30%, 
+                 rgba(255,107,53,0.1) 50%,
+                 transparent 70%);
+             border-radius: 50px;
+             z-index: -1;
+             opacity: 0;
+             transition: opacity 0.5s ease;
+         }
+
+         .slot-machine-container.spotlight::before {
+             opacity: 1;
+             animation: spotlightPulse 2s ease-in-out infinite alternate;
+         }
+
+         @keyframes spotlightPulse {
+             0% {
+                 transform: scale(1);
+                 opacity: 0.6;
+             }
+             100% {
+                 transform: scale(1.1);
+                 opacity: 1;
+             }
+         }
+
+         .slot-machine {
+             background: linear-gradient(145deg, #FF8C00, #FFA500, #FFB84D);
+             border-radius: 25px;
+             padding: 25px;
+             box-shadow: 
+                 0 10px 30px rgba(0,0,0,0.3),
+                 inset 0 0 0 3px #FFD700,
+                 inset 0 0 0 6px #FF6B35,
+                 inset 0 3px 15px rgba(255,255,255,0.4);
+             position: relative;
+             border: 6px solid #5c4e49;
+         }
+
+         /* 우측 레버 추가 */
+         .slot-machine::after {
+             content: '';
+             position: absolute;
+             top: 43%;
+             right: -12px;
+             transform: translateY(-50%);
+             width: 15px;
+             height: 100px;
+             background: linear-gradient(145deg, #FFB84D, #FF8C00);
+             border-radius: 12px;
+             border: 3px solid #FF6B35;
+             box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+         }
+
+         .slot-machine::before {
+             content: '';
+             position: absolute;
+             top: 25%;
+             right: -12px;
+             transform: translateY(-50%);
+             width: 15px;
+             height: 15px;
+             background: radial-gradient(circle, #DC143C, #B22222);
+             border-radius: 50%;
+             border: 3px solid #e16112;
+             box-shadow: 0 3px 8px rgba(0,0,0,0.4);
+         }
+
+        .jackpot-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+                 .jackpot-text {
+             font-size: 1.6em;
+             font-weight: 800;
+             color: #FFFFFF;
+             text-shadow: 
+                 2px 2px 0px #8B4513,
+                 -1px -1px 0px #FFD700,
+                 3px 3px 8px rgba(0,0,0,0.5);
+             animation: jackpotGlow 2s ease-in-out infinite alternate;
+         }
+
+        .reels-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 20px;
+            background: linear-gradient(145deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255,215,0,0.3);
+            box-shadow: 
+                0 8px 32px rgba(0,0,0,0.2),
+                inset 0 2px 10px rgba(255,255,255,0.1);
+            transition: all 0.5s ease;
+            overflow: hidden; /* 박스 밖으로 넘어가지 않도록 제한 */
+        }
+
+        /* 당첨 시 릴 컨테이너 특별 효과 */
+        .reels-container.winning {
+            background: linear-gradient(145deg, rgba(255,215,0,0.2), rgba(255,107,53,0.1));
+            border: 3px solid #FFD700;
+            box-shadow: 
+                0 0 0 5px rgba(255,215,0,0.5),
+                0 0 50px rgba(255,215,0,0.8),
+                0 0 100px rgba(255,107,53,0.4),
+                inset 0 2px 15px rgba(255,255,255,0.3);
+            animation: containerGlow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes containerGlow {
+            0% {
+                transform: scale(1);
+                filter: brightness(1);
+            }
+            100% {
+                transform: scale(1.01);
+                filter: brightness(1.1);
+            }
+        }
+
+                 .reel {
+             width: 85px;
+             height: 110px;
+             background: linear-gradient(145deg, #FFFFFF, #F8F8F8, #F0F0F0);
+             border: 5px solid transparent;
+             border-radius: 15px;
+             display: flex;
+             align-items: center;
+             justify-content: center;
+             font-size: 3em;
+             font-weight: 900;
+             font-family: 'Noto Sans KR', sans-serif;
+             position: relative;
+             overflow: hidden; /* 릴 내부에서만 스핀하도록 제한 */
+             background-clip: padding-box;
+             animation: reelGlow 2s ease-in-out infinite alternate;
+         }
+
+         /* 글로우 효과를 위한 외부 래퍼 */
+         .reel::before {
+             content: '';
+             position: absolute;
+             top: -8px;
+             left: -8px;
+             right: -8px;
+             bottom: -8px;
+             background: transparent;
+             border-radius: 23px;
+             box-shadow: 
+                 0 8px 25px rgba(0,0,0,0.5),
+                 0 0 0 2px #FFD700,
+                 0 0 0 5px #FF6B35,
+                 0 0 0 8px #FFD700,
+                 0 0 20px rgba(255,215,0,0.6);
+             z-index: -1;
+             pointer-events: none;
+         }
+
+         .reel::after {
+             content: '';
+             position: absolute;
+             top: 0;
+             left: 0;
+             right: 0;
+             bottom: 0;
+             background: transparent;
+             border-radius: 15px;
+             box-shadow: 
+                 inset 0 3px 12px rgba(255,255,255,0.9),
+                 inset 0 0 0 2px rgba(255,215,0,0.3);
+             pointer-events: none;
+         }
+
+        .reel-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            transition: all 0.1s ease;
+        }
+
+        .reel.spinning .reel-content {
+            animation: reelSpin 0.1s linear infinite;
+        }
+
+        .reel.slowing .reel-content {
+            animation: reelSlowDown 2s ease-out forwards;
+        }
+
+        /* 당첨 시 릴 특별 효과 */
+        .reel.winning {
+            animation: reelWinning 1s ease-in-out infinite alternate !important;
+            box-shadow: 
+                0 0 0 4px #FFD700,
+                0 0 0 8px #FF6B35,
+                0 0 0 12px #FFD700,
+                0 0 50px rgba(255,215,0,1),
+                0 0 80px rgba(255,107,53,1),
+                0 0 100px rgba(255,215,0,0.6),
+                inset 0 0 30px rgba(255,255,255,1) !important;
+        }
+
+        @keyframes reelWinning {
+            0% {
+                transform: scale(1) rotate(0deg);
+                filter: brightness(1.2) saturate(1.5);
+            }
+            100% {
+                transform: scale(1.03) rotate(1deg);
+                filter: brightness(1.5) saturate(2);
+            }
+        }
+
+        .spin-button {
+            display: block;
+            margin: 25px auto;
+            padding: 12px 50px;
+            font-size: 1.8em;
+            font-family: 'Noto Sans KR', sans-serif;
+            font-weight: 900;
+            background: linear-gradient(145deg, #FF8C00, #FFA500, #FFB84D);
+            color: #FFFFFF;
+            border: 4px solid #FF6B35;
+            border-radius: 25px;
+            cursor: pointer;
+            box-shadow: 
+                0 8px 25px rgba(0,0,0,0.3),
+                inset 0 2px 10px rgba(255,255,255,0.4),
+                inset 0 -2px 8px rgba(255,107,53,0.3);
+            transition: all 0.3s ease;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .spin-button:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 
+                0 12px 30px rgba(0,0,0,0.4),
+                inset 0 3px 15px rgba(255,255,255,0.5),
+                inset 0 -3px 10px rgba(255,107,53,0.4);
+        }
+
+        .spin-button:active:not(:disabled) {
+            transform: translateY(-1px);
+        }
+
+        .spin-button:disabled {
+            background: linear-gradient(145deg, #d94b05, #6e527a);
+            color: #c7bdc5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+        }
+
+                 .result {
+             text-align: center;
+             padding: 5px 20px;
+             min-height: 280px;
+             max-height: 280px;
+             display: flex;
+             flex-direction: column;
+             justify-content: flex-start;
+             overflow: visible;
+         }
+
+         .game-info {
+             text-align: left;
+             padding: 15px 20px;
+             margin: 10px 20px;
+         }
+
+         .game-info-title {
+             font-size: 1.4em;
+             font-weight: 700;
+             color: hsl(25, 87%, 18%);
+             margin-bottom: 8px;
+             font-family: 'Noto Sans KR', sans-serif;
+         }
+
+                  .game-info-list {
+             font-size: 1.1em;
+             color: hsl(25, 87%, 18%);
+             line-height: 1;
+             font-weight: 900;
+             font-family: 'Noto Sans KR', sans-serif;
+         }
+
+         .game-info-list div {
+             margin: 8px 0;
+             padding: 2px 0;
+         }
+
+        /* 꽝 애니메이션 */
+        .miss-animation {
+            position: fixed;
+            top: 50%;
+            left: -100px;
+            transform: translateY(-50%);
+            z-index: 1000;
+            animation: flyAcross 4s ease-in-out;
+            pointer-events: none;
+        }
+
+        .miss-animation img {
+            width: 100px;
+            height: 100px;
+        }
+
+        @keyframes flyAcross {
+            0% {
+                left: -100px;
+                opacity: 1;
+            }
+            100% {
+                left: calc(100vw + 100px);
+                opacity: 0.8;
+            }
+        }
+
+        /* 당첨 메시지 강조 */
+        .win-message {
+            font-size: 2.5em !important;
+            color: #FF6B35 !important;
+            font-weight: 900 !important;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.5) !important;
+            animation: winPulse 0.8s ease-in-out infinite alternate !important;
+        }
+
+                 @keyframes winPulse {
+             0% {
+                 transform: scale(1);
+                 text-shadow: 3px 3px 6px rgba(0,0,0,0.5);
+             }
+             100% {
+                 transform: scale(1.05);
+                 text-shadow: 3px 3px 10px rgba(255,107,53,0.8);
+             }
+         }
+
+         /* 당첨 메시지 펄스 애니메이션 */
+         @keyframes winMessagePulse {
+             0% {
+                 transform: scale(1);
+                 box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+             }
+             100% {
+                 transform: scale(1.02);
+                 box-shadow: 0 8px 25px rgba(255,215,0,0.6);
+             }
+         }
+
+         /* 축포 효과 */
+         .confetti {
+             position: fixed;
+             width: 10px;
+             height: 10px;
+             background: #FFD700;
+             animation: confetti-fall 5s linear infinite;
+             z-index: 1000;
+         }
+
+         .confetti:nth-child(odd) {
+             background: #FF6B35;
+             animation-delay: -0.5s;
+         }
+
+         .confetti:nth-child(even) {
+             background: #4ECDC4;
+             animation-delay: -1s;
+         }
+
+         .confetti:nth-child(3n) {
+             background: #45B7D1;
+             animation-delay: -1.5s;
+         }
+
+         .confetti:nth-child(4n) {
+             background: #96CEB4;
+             animation-delay: -2s;
+         }
+
+         .confetti:nth-child(5n) {
+             background: #FFEAA7;
+             animation-delay: -2.5s;
+         }
+
+         @keyframes confetti-fall {
+             0% {
+                 transform: translateY(-100vh) rotate(0deg);
+                 opacity: 1;
+             }
+             100% {
+                 transform: translateY(100vh) rotate(720deg);
+                 opacity: 0;
+             }
+         }
+
+         /* 꽃놀이 효과 */
+         .flower {
+             position: fixed;
+             font-size: 20px;
+             animation: flower-fall 5s linear infinite;
+             z-index: 1000;
+             pointer-events: none;
+         }
+
+         .flower:nth-child(odd) {
+             animation-delay: -0.3s;
+         }
+
+         .flower:nth-child(even) {
+             animation-delay: -0.8s;
+         }
+
+         .flower:nth-child(3n) {
+             animation-delay: -1.2s;
+         }
+
+         .flower:nth-child(4n) {
+             animation-delay: -1.8s;
+         }
+
+         @keyframes flower-fall {
+             0% {
+                 transform: translateY(-100vh) rotate(0deg);
+                 opacity: 1;
+             }
+             100% {
+                 transform: translateY(100vh) rotate(360deg);
+                 opacity: 0.3;
+             }
+         }
+
+        .result-message {
+            font-size: 1.8em;
+            margin-bottom: 15px;
+            color: #2C3E50;
+            font-weight: 700;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+        }
+
+        .coupon {
+            background: #FFFFFF;
+            color: #333333;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin: 0 auto 10px;
+            text-align: center;
+            font-size: 0.9em;
+            font-weight: 500;
+            animation: fadeIn 0.8s ease-in, couponFloat 3s ease-in-out infinite;
+            border: 2px dashed #FF6B6B;
+            box-shadow: 
+                0 5px 15px rgba(0,0,0,0.15),
+                inset 0 1px 0 rgba(255,255,255,0.9);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 140px;
+            max-width: 300px;
+            width: 90%;
+        }
+
+        .coupon-header {
+            font-size: 0.9em;
+            color: #333333;
+            margin-bottom: 5px;
+            font-weight: 700;
+        }
+
+        .coupon-main-title {
+            font-size: 1.1em;
+            color: #FF6B6B;
+            margin-bottom: 8px;
+            font-weight: 900;
+            line-height: 1.2;
+        }
+
+        .coupon-code-section {
+            background: #FF6B6B;
+            color: #FFFFFF;
+            padding: 8px 15px;
+            margin: 8px 0;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.8em;
+            font-weight: 700;
+            letter-spacing: 1px;
+            width: 100%;
+        }
+
+        .coupon-validity {
+            font-size: 0.7em;
+            color: #666666;
+            margin: 5px 0;
+            line-height: 1.3;
+        }
+
+        .coupon-footer {
+            font-size: 0.6em;
+            color: #999999;
+            margin-top: 8px;
+            line-height: 1.2;
+            border-top: 1px solid #EEEEEE;
+            padding-top: 5px;
+        }
+
+        @keyframes couponFloat {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-3px);
+            }
+        }
+
+        .coupon::before {
+            content: '🎉';
+            position: absolute;
+            left: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1em;
+            animation: sparkle 1s ease-in-out infinite alternate;
+        }
+
+        .coupon::after {
+            content: '🎉';
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1em;
+            animation: sparkle 1s ease-in-out infinite alternate-reverse;
+        }
+
+        .coupon-expiry {
+            font-size: 0.8em;
+            margin-top: 10px;
+            opacity: 0.9;
+        }
+
+        .miss-message {
+            color: #7F8C8D;
+            font-size: 1.2em;
+            margin: 10px 0;
+            font-weight: 500;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 15px;
+            margin-bottom: 15px;
+            padding-bottom: 5px;
+        }
+
+        .button {
+            padding: 12px 25px;
+            border: 3px solid transparent;
+            border-radius: 25px;
+            font-family: 'Noto Sans KR', sans-serif;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .save-btn {
+            background: linear-gradient(45deg, #FF8C00, #FFA500);
+            color: white;
+            border: 3px solid #FF6B35;
+            box-shadow: 0 5px 15px rgba(255, 140, 0, 0.4);
+        }
+
+        .save-btn:hover {
+            transform: translateY(-2px);
+            border-color: #FF4500;
+            box-shadow: 0 7px 20px rgba(255, 140, 0, 0.6);
+        }
+
+        .home-btn {
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            color: #8B4513;
+            border: 3px solid #DAA520;
+            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.4);
+        }
+
+        .home-btn:hover {
+            transform: translateY(-2px);
+            border-color: #B8860B;
+            box-shadow: 0 7px 20px rgba(255, 215, 0, 0.6);
+        }
+
+        /* 애니메이션 */
+        /* 릴 글로우 애니메이션 - 주인공 효과 */
+        @keyframes reelGlow {
+            0% {
+                box-shadow: 
+                    0 8px 25px rgba(0,0,0,0.5),
+                    0 0 0 2px #FFD700,
+                    0 0 0 5px #FF6B35,
+                    0 0 0 8px #FFD700,
+                    0 0 20px rgba(255,215,0,0.6),
+                    inset 0 3px 12px rgba(255,255,255,0.9),
+                    inset 0 0 0 2px rgba(255,215,0,0.3);
+                transform: scale(1);
+            }
+            100% {
+                box-shadow: 
+                    0 12px 35px rgba(0,0,0,0.6),
+                    0 0 0 3px #FFD700,
+                    0 0 0 6px #FF6B35,
+                    0 0 0 10px #FFD700,
+                    0 0 30px rgba(255,215,0,0.9),
+                    0 0 50px rgba(255,107,53,0.4),
+                    inset 0 3px 15px rgba(255,255,255,1),
+                    inset 0 0 0 3px rgba(255,215,0,0.5);
+                transform: scale(1.02);
+            }
+        }
+
+        /* 스피닝 시 특별한 효과 */
+        .reel.spinning {
+            animation: reelSpinGlow 0.1s linear infinite !important;
+            box-shadow: 
+                0 0 0 3px #FFD700,
+                0 0 0 6px #FF6B35,
+                0 0 0 10px #FFD700,
+                0 0 40px rgba(255,215,0,1),
+                0 0 60px rgba(255,107,53,0.8),
+                inset 0 0 20px rgba(255,255,255,0.8) !important;
+        }
+
+        @keyframes reelSpinGlow {
+            0% {
+                filter: brightness(1) hue-rotate(0deg);
+                transform: scale(1);
+            }
+            25% {
+                filter: brightness(1.2) hue-rotate(90deg);
+                transform: scale(1.03);
+            }
+            50% {
+                filter: brightness(1.4) hue-rotate(180deg);
+                transform: scale(1.05);
+            }
+            75% {
+                filter: brightness(1.2) hue-rotate(270deg);
+                transform: scale(1.03);
+            }
+            100% {
+                filter: brightness(1) hue-rotate(360deg);
+                transform: scale(1);
+            }
+        }
+
+        @keyframes reelSpin {
+            0% { transform: translate(-50%, -50%) translateY(0); }
+            25% { transform: translate(-50%, -50%) translateY(-15px); }
+            50% { transform: translate(-50%, -50%) translateY(0); }
+            75% { transform: translate(-50%, -50%) translateY(15px); }
+            100% { transform: translate(-50%, -50%) translateY(0); }
+        }
+
+        @keyframes reelSlowDown {
+            0% { transform: translate(-50%, -50%) translateY(0) scale(1); }
+            20% { transform: translate(-50%, -50%) translateY(-8px) scale(1.05); }
+            40% { transform: translate(-50%, -50%) translateY(0) scale(1); }
+            60% { transform: translate(-50%, -50%) translateY(8px) scale(1.05); }
+            80% { transform: translate(-50%, -50%) translateY(0) scale(1); }
+            100% { transform: translate(-50%, -50%) translateY(0) scale(1); }
+        }
+
+        @keyframes titleGlow {
+            0% { 
+                text-shadow: 3px 3px 6px rgba(0,0,0,0.4), 0 0 20px #FF8C00;
+            }
+            100% { 
+                text-shadow: 3px 3px 8px rgba(0,0,0,0.5), 0 0 30px #FF8C00, 0 0 40px #FFA500;
+            }
+        }
+
+                 @keyframes jackpotGlow {
+             0% { 
+                 text-shadow: 
+                     2px 2px 0px #8B4513,
+                     -1px -1px 0px #FFD700,
+                     3px 3px 8px rgba(0,0,0,0.5),
+                     0 0 15px #FFD700;
+             }
+             100% { 
+                 text-shadow: 
+                     2px 2px 0px #8B4513,
+                     -1px -1px 0px #FFD700,
+                     3px 3px 12px rgba(0,0,0,0.6),
+                     0 0 25px #FFD700,
+                     0 0 35px #FFA500;
+             }
+         }
+
+        @keyframes sparkle {
+            0% { transform: scale(1) rotate(0deg); }
+            100% { transform: scale(1.1) rotate(5deg); }
+        }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 10px 25px rgba(0,0,0,0.4), inset 0 2px 10px rgba(255,255,255,0.3); }
+            50% { box-shadow: 0 15px 35px rgba(255,215,0,0.6), inset 0 2px 10px rgba(255,255,255,0.4); }
+            100% { box-shadow: 0 10px 25px rgba(0,0,0,0.4), inset 0 2px 10px rgba(255,255,255,0.3); }
+        }
+
+                 /* 반응형 디자인 */
+         @media (max-width: 480px) {
+             .game-container {
+                 min-height: 750px;
+             }
+             
+             .title {
+                 font-size: 2em;
+             }
+             
+             .reel {
+                 width: 70px;
+                 height: 90px;
+                 font-size: 2.5em;
+             }
+             
+             .spin-button {
+                 padding: 10px 35px;
+                 font-size: 1.5em;
+             }
+             
+             .reels-container {
+                 gap: 10px;
+             }
+             
+             .result {
+                 min-height: 250px;
+                 max-height: 250px;
+             }
+         }
+    </style>
+</head>
+<body>
+    <!-- React 컴포넌트가 렌더링될 루트 요소 -->
+    <div id="root"></div>
+
+    <script type="text/babel">
+        // React 훅 가져오기
+        const { useState, useEffect } = React;
+
+        // 메인 슬롯머신 컴포넌트
+        function SlotMachine() {
+            // 상태 관리 - 슬롯머신의 각 릴 값 (초기값: 50, 30, 20)
+            const [reels, setReels] = useState(['50', '30', '20']);
+            // 상태 관리 - 현재 회전 중인지 여부
+            const [isSpinning, setIsSpinning] = useState(false);
+            // 상태 관리 - 게임 결과 (당첨/꽝 정보)
+            const [result, setResult] = useState(null);
+            // 상태 관리 - 결과 화면 표시 여부
+            const [showResult, setShowResult] = useState(false);
+            // 상태 관리 - 꽝 애니메이션 표시 여부
+            const [showMissAnimation, setShowMissAnimation] = useState(false);
+            // 상태 관리 - 축포 효과 표시 여부
+            const [showConfetti, setShowConfetti] = useState(false);
+            // 상태 관리 - 쿠폰 화면 표시 여부
+            const [showCoupon, setShowCoupon] = useState(false);
+            // 상태 관리 - 꽃놀이 효과 표시 여부
+            const [showFlowers, setShowFlowers] = useState(false);
+
+            // 확률 시스템 - 각 조합별 당첨 확률과 보상 정의
+            const prizes = [
+                { combination: ['50', '50', '50'], reward: '50% 할인', probability: 0.02 }, // 2% 확률
+                { combination: ['30', '30', '30'], reward: '30% 할인', probability: 0.10 }, // 10% 확률
+                { combination: ['20', '20', '20'], reward: '20% 할인', probability: 0.18 }, // 18% 확률
+                { combination: ['10', '10', '10'], reward: '10% 할인', probability: 0.20 }, // 20% 확률
+                { combination: ['☕', '☕', '☕'], reward: '음료수', probability: 0.10 },     // 10% 확률
+                { combination: ['🥗', '🥗', '🥗'], reward: '샐러드', probability: 0.10 },   // 10% 확률
+                { combination: ['🍲', '🍲', '🍲'], reward: '스프', probability: 0.10 },     // 10% 확률
+                { combination: ['천', '천', '천'], reward: '천원할인', probability: 0.10 }  // 10% 확률
+            ];
+
+            // 슬롯머신에 표시될 모든 심볼 배열
+            const symbols = ['50', '30', '20', '10', '☕', '🥗', '🍲', '천'];
+
+            // 랜덤 심볼 생성 함수 - 배열에서 무작위로 하나 선택
+            const getRandomSymbol = () => {
+                return symbols[Math.floor(Math.random() * symbols.length)];
+            };
+
+            // 게임 결과 결정 함수 - 확률에 따라 당첨/꽝 결정
+            const determineResult = () => {
+                const random = Math.random(); // 0~1 사이 랜덤 값 생성
+                let cumulativeProbability = 0; // 누적 확률 계산용
+
+                // 각 상품별로 확률 체크
+                for (const prize of prizes) {
+                    cumulativeProbability += prize.probability; // 누적 확률 증가
+                    if (random <= cumulativeProbability) {      // 랜덤값이 누적확률 이하면 당첨
+                        return {
+                            reels: prize.combination,  // 당첨 조합
+                            reward: prize.reward,      // 보상 내용
+                            isWin: true                // 당첨 여부
+                        };
+                    }
+                }
+
+                // 모든 상품에 해당하지 않으면 꽝 (나머지 10% 확률)
+                return {
+                    reels: [getRandomSymbol(), getRandomSymbol(), getRandomSymbol()], // 랜덤 조합
+                    reward: '꽝, 아깝습니다!',  // 꽝 메시지
+                    isWin: false               // 꽝 표시
+                };
+            };
+
+            const spin = () => {
+                if (isSpinning || showResult) return; // 회전 중이거나 결과 표시 중일 때는 실행 안 함
+
+                setIsSpinning(true);
+                setShowResult(false);
+                setResult(null);
+
+                // 3초 고속 회전
+                const spinInterval = setInterval(() => {
+                    setReels([getRandomSymbol(), getRandomSymbol(), getRandomSymbol()]);
+                }, 100);
+
+                setTimeout(() => {
+                    clearInterval(spinInterval);
+                    
+                    // 2초 감속 후 결과 결정
+                    const finalResult = determineResult();
+                    setReels(finalResult.reels);
+                    
+                    setTimeout(() => {
+                        setIsSpinning(false);
+                        setResult(finalResult);
+                        setShowResult(true);
+                        
+                        // 사운드 재생
+                        if (finalResult.isWin) {
+                            // 당첨 시 ddd.wav 5초간 재생 + 축포 + 꽃놀이 효과
+                            const winAudio = new Audio('ddd.wav');
+                            winAudio.play();
+                            setShowConfetti(true);
+                            setShowFlowers(true);
+                            
+                            setTimeout(() => {
+                                winAudio.pause();
+                                winAudio.currentTime = 0;
+                                setShowConfetti(false);
+                                setShowFlowers(false);
+                            }, 5000);
+                        } else {
+                            // 꽝 시 ggg.wav 재생 + 애니메이션
+                            const missAudio = new Audio('ggg.wav');
+                            missAudio.play();
+                            setShowMissAnimation(true);
+                            
+                            // 4초 후 애니메이션 제거
+                            setTimeout(() => {
+                                setShowMissAnimation(false);
+                            }, 4000);
+                        }
+                    }, 2000);
+                }, 3000);
+            };
+
+            // 쿠폰 받기 버튼 클릭 함수 - 쿠폰 화면 표시
+            const receiveCoupon = () => {
+                setShowCoupon(true); // 쿠폰 화면 표시 상태로 변경
+            };
+
+            // 쿠폰 저장 함수 - 쿠폰 이미지 다운로드 및 로컬스토리지 저장
+            const saveCoupon = () => {
+                if (result && result.isWin) { // 당첨된 경우만 저장
+                    // 쿠폰 정보 생성
+                    const couponCode = `AKI${new Date().getFullYear()}${String(new Date().getMonth() + 1).padStart(2, '0')}${String(new Date().getDate()).padStart(2, '0')}${Math.random().toString(36).substr(2, 6).toUpperCase()}`;
+                    const expiryDate = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+                    const couponTitle = result.reward.includes('50%') ? '50% 할인 쿠폰' : 
+                                       result.reward.includes('30%') ? '30% 할인 쿠폰' :
+                                       result.reward.includes('20%') ? '20% 할인 쿠폰' :
+                                       result.reward.includes('10%') ? '10% 할인 쿠폰' :
+                                       result.reward === '음료수' ? '오리지널 블렌딩 음료수' :
+                                       result.reward === '샐러드' ? '오리지널 블렌딩 샐러드' :
+                                       result.reward === '스프' ? '오리지널 블렌딩 스프' :
+                                       result.reward === '천원할인' ? '천원 할인 쿠폰' : `${result.reward} 쿠폰`;
+
+                    // Canvas를 사용해서 쿠폰 이미지 생성
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    
+                    // 캔버스 크기 설정 (쿠폰 크기)
+                    canvas.width = 600;
+                    canvas.height = 400;
+                    
+                    // 배경 그리기 (흰색)
+                    ctx.fillStyle = '#FFFFFF';
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    
+                    // 점선 테두리 그리기
+                    ctx.strokeStyle = '#FF6B6B';
+                    ctx.lineWidth = 4;
+                    ctx.setLineDash([10, 5]);
+                    ctx.strokeRect(10, 10, canvas.width - 20, canvas.height - 20);
+                    
+                    // 폰트 설정
+                    ctx.fillStyle = '#333333';
+                    ctx.textAlign = 'center';
+                    ctx.font = 'bold 24px Arial, sans-serif';
+                    
+                    // 헤더 텍스트
+                    ctx.fillText('🎁 행운의 당첨쿠폰', canvas.width / 2, 60);
+                    
+                    // 메인 제목
+                    ctx.fillStyle = '#FF6B6B';
+                    ctx.font = 'bold 32px Arial, sans-serif';
+                    ctx.fillText(couponTitle, canvas.width / 2, 120);
+                    
+                    // 쿠폰 코드 배경
+                    ctx.fillStyle = '#FF6B6B';
+                    ctx.fillRect(50, 150, canvas.width - 100, 50);
+                    
+                    // 쿠폰 코드 텍스트
+                    ctx.fillStyle = '#FFFFFF';
+                    ctx.font = 'bold 20px monospace';
+                    ctx.fillText(couponCode, canvas.width / 2, 180);
+                    
+                    // 유효기간
+                    ctx.fillStyle = '#666666';
+                    ctx.font = '16px Arial, sans-serif';
+                    ctx.fillText(`유효기간: ${expiryDate.getFullYear()}. ${expiryDate.getMonth() + 1}. ${expiryDate.getDate()}.까지`, canvas.width / 2, 240);
+                    ctx.fillText('사용법: 매장 방문시 이 코드를 제시해주세요', canvas.width / 2, 270);
+                    
+                    // 푸터
+                    ctx.fillStyle = '#999999';
+                    ctx.font = '14px Arial, sans-serif';
+                    ctx.fillText('행운의 당첨쿠폰으로 더 좋은 경험을 선사해드리겠습니다.', canvas.width / 2, 340);
+                    
+                    // 장식 이모지
+                    ctx.font = '30px Arial, sans-serif';
+                    ctx.fillText('🎉', 80, 200);
+                    ctx.fillText('🎉', canvas.width - 80, 200);
+                    
+                    // 캔버스를 이미지로 변환하여 다운로드
+                    canvas.toBlob((blob) => {
+                        const url = URL.createObjectURL(blob);
+                        const link = document.createElement('a');
+                        link.href = url;
+                        link.download = `행운의당첨쿠폰_${couponCode}.png`;
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                        URL.revokeObjectURL(url);
+                        
+                        // 로컬스토리지에도 저장
+                        const coupon = {
+                            reward: result.reward,
+                            date: new Date().toLocaleDateString(),
+                            expiry: expiryDate.toLocaleDateString(),
+                            code: couponCode
+                        };
+                        
+                        const savedCoupons = JSON.parse(localStorage.getItem('coupons') || '[]');
+                        savedCoupons.push(coupon);
+                        localStorage.setItem('coupons', JSON.stringify(savedCoupons));
+                        
+                        alert('쿠폰이 다운로드되었습니다!');
+                    }, 'image/png');
+                }
+            };
+
+            // 홈으로 돌아가기 함수 - 모든 상태 초기화
+            const goHome = () => {
+                setResult(null);           // 결과 초기화
+                setShowResult(false);      // 결과 화면 숨김
+                setReels(['50', '30', '20']); // 릴 초기값으로 복원
+                setShowMissAnimation(false); // 꽝 애니메이션 숨김
+                setShowConfetti(false);    // 축포 효과 숨김
+                setShowFlowers(false);     // 꽃놀이 효과 숨김
+                setShowCoupon(false);      // 쿠폰 화면 숨김
+            };
+
+            // JSX 반환 - 실제 화면에 렌더링될 HTML 구조
+            return (
+                <div className="game-container"> {/* 메인 게임 컨테이너 */}
+                    <div className="header"> {/* 헤더 영역 */}
+                        <div className="title">💎 행운의 쿠폰 게임 💎</div> {/* 메인 제목 */}
+                        <div className="subtitle">주문하신 동안 행운을 돌려보세요!</div> {/* 부제목 */}
+                    </div>
+
+                    <div className={`slot-machine-container ${showResult && result && result.isWin ? 'spotlight' : ''}`}>
+                        <div className="slot-machine">
+                            <div className="jackpot-header">
+                                <div className="jackpot-text">💎 JACKPOT 💎</div>
+                            </div>
+
+                            <div className={`reels-container ${showResult && result && result.isWin ? 'winning' : ''}`}>
+                                {reels.map((symbol, index) => (
+                                    <div 
+                                        key={index} 
+                                        className={`reel ${isSpinning ? 'spinning' : ''} ${showResult && result && result.isWin ? 'winning' : ''}`}
+                                    >
+                                        <div className="reel-content">{symbol}</div>
+                                    </div>
+                                ))}
+                            </div>
+
+                            <button 
+                                className="spin-button" 
+                                onClick={spin} 
+                                disabled={isSpinning || showResult}
+                            >
+                                {isSpinning ? '회전 중...' : (showResult ? '결과보기' : '시작하기')}
+                            </button>
+
+                            {/* 당첨 메시지 표시 영역 */}
+                            {showResult && result && result.isWin && (
+                                <div style={{
+                                    textAlign: 'center',
+                                    marginTop: '15px',
+                                    fontSize: '1.8em',
+                                    fontWeight: '900',
+                                    color: '#FFFFFF',
+                                    fontFamily: 'Noto Sans KR, sans-serif',
+                                    textShadow: '2px 2px 4px rgba(0,0,0,0.7)',
+                                    background: (() => {
+                                        // 당첨 종류별 배경색 설정
+                                        if (result.reward.includes('50%')) return 'linear-gradient(45deg, #FF6B35, #FF8C42)'; // 빨간 오렌지
+                                        if (result.reward.includes('30%')) return 'linear-gradient(45deg, #4ECDC4, #44A08D)'; // 청록색
+                                        if (result.reward.includes('20%')) return 'linear-gradient(45deg, #A8E6CF, #7FCDCD)'; // 연두색
+                                        if (result.reward.includes('10%')) return 'linear-gradient(45deg, #FFD93D, #6BCF7F)'; // 노란-초록
+                                        if (result.reward.includes('음료수')) return 'linear-gradient(45deg, #8B4513, #D2691E)'; // 갈색 (커피)
+                                        if (result.reward.includes('샐러드')) return 'linear-gradient(45deg, #32CD32, #228B22)'; // 진한 초록색
+                                        if (result.reward.includes('스프')) return 'linear-gradient(45deg, #FF4500, #FF6347)'; // 토마토색
+                                        if (result.reward.includes('천원할인')) return 'linear-gradient(45deg, #9370DB, #8A2BE2)'; // 보라색
+                                        return 'linear-gradient(45deg, #FFD700, #FFA500)'; // 기본 골드
+                                    })(),
+                                    padding: '10px 20px',
+                                    borderRadius: '15px',
+                                    border: '3px solid #FFFFFF',
+                                    boxShadow: '0 5px 15px rgba(0,0,0,0.4)',
+                                    animation: 'winMessagePulse 1s ease-in-out infinite alternate'
+                                }}>
+                                    🎊 {result.reward} 당첨 🎊
+                                </div>
+                            )}
+                        </div>
+                    </div>
+
+                     <div className="result">
+                         {showResult && result ? (
+                             <>
+                                 {result.isWin && !showCoupon ? (
+                                     <>
+                                         <div className={`result-message ${result.isWin ? 'win-message' : ''}`}>
+                                             🎉 축하합니다! 🎉
+                                         </div>
+                                         <div className="buttons">
+                                             <button className="button save-btn" onClick={receiveCoupon}>
+                                                 쿠폰 받기
+                                             </button>
+                                             <button className="button home-btn" onClick={goHome}>
+                                                 다시 도전
+                                             </button>
+                                         </div>
+                                     </>
+                                 ) : result.isWin && showCoupon ? (
+                                     <>
+                                         <div className="coupon">
+                                             <div className="coupon-header">🎁 행운의 당첨쿠폰</div>
+                                             <div className="coupon-main-title">
+                                                 {result.reward.includes('50%') ? '50% 할인 쿠폰' : 
+                                                  result.reward.includes('30%') ? '30% 할인 쿠폰' :
+                                                  result.reward.includes('20%') ? '20% 할인 쿠폰' :
+                                                  result.reward.includes('10%') ? '10% 할인 쿠폰' :
+                                                  result.reward === '음료수' ? '오리지널 블렌딩 음료수' :
+                                                  result.reward === '샐러드' ? '오리지널 블렌딩 샐러드' :
+                                                  result.reward === '스프' ? '오리지널 블렌딩 스프' :
+                                                  result.reward === '천원할인' ? '천원 할인 쿠폰' : `${result.reward} 쿠폰`}
+                                             </div>
+                                             <div className="coupon-code-section">
+                                                 AKI{new Date().getFullYear()}{String(new Date().getMonth() + 1).padStart(2, '0')}{String(new Date().getDate()).padStart(2, '0')}{Math.random().toString(36).substr(2, 6).toUpperCase()}
+                                             </div>
+                                             <div className="coupon-validity">
+                                                 유효기간: {new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).getFullYear()}. {new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).getMonth() + 1}. {new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).getDate()}.까지<br/>
+                                                 사용법: 매장 방문시 이 코드를 제시해주세요
+                                             </div>
+                                             <div className="coupon-footer">
+                                                 행운의 당첨쿠폰으로 더 좋은 경험을 선사해드리겠습니다.
+                                             </div>
+                                         </div>
+                                         <div className="buttons">
+                                             <button className="button save-btn" onClick={saveCoupon}>
+                                                 쿠폰저장
+                                             </button>
+                                             <button className="button home-btn" onClick={goHome}>
+                                                 다시도전
+                                             </button>
+                                         </div>
+                                     </>
+                                 ) : !result.isWin ? (
+                                     <>
+                                         <div className="miss-message">{result.reward}</div>
+                                         <div className="buttons">
+                                             <button className="button home-btn" onClick={goHome}>
+                                                 다시 도전
+                                             </button>
+                                         </div>
+                                     </>
+                                 ) : null}
+                             </>
+                         ) : (
+                             <div className="game-info">
+                                 <div className="game-info-title">🎯 게임 안내</div>
+                                 <div className="game-info-list">
+                                     <div>• 숫자는 할인율 % 입니다</div>
+                                     <div>• 1등 50% 할인 ~ 10% 할인까지</div>
+                                     <div>• 음료수, 샐러드, 스프, 천원할인까지</div>
+                                 </div>
+                             </div>
+                         )}
+                     </div>
+
+                     {/* 꽝 애니메이션 */}
+                     {showMissAnimation && (
+                         <div className="miss-animation">
+                             <img src="ggg.png" alt="꽝" />
+                         </div>
+                     )}
+
+                     {/* 축포 효과 */}
+                     {showConfetti && (
+                         <>
+                             {[...Array(100)].map((_, i) => (
+                                 <div
+                                     key={i}
+                                     className="confetti"
+                                     style={{
+                                         left: Math.random() * 100 + '%',
+                                         animationDelay: Math.random() * 5 + 's',
+                                         animationDuration: (Math.random() * 3 + 3) + 's'
+                                     }}
+                                 />
+                             ))}
+                         </>
+                     )}
+
+                     {/* 꽃놀이 효과 */}
+                     {showFlowers && (
+                         <>
+                             {[...Array(60)].map((_, i) => (
+                                 <div
+                                     key={i}
+                                     className="flower"
+                                     style={{
+                                         left: Math.random() * 100 + '%',
+                                         animationDelay: Math.random() * 5 + 's',
+                                         animationDuration: (Math.random() * 3 + 4) + 's'
+                                     }}
+                                 >
+                                     {['🌸', '🌺', '🌻', '🌷', '🌹', '💐'][Math.floor(Math.random() * 6)]}
+                                 </div>
+                             ))}
+                         </>
+                     )}
+                </div>
+            );
+        }
+
+        // React 컴포넌트를 실제 DOM에 렌더링
+        // SlotMachine 컴포넌트를 id가 'root'인 요소에 마운트
+        ReactDOM.render(<SlotMachine />, document.getElementById('root'));
+    </script>
+</body>
+</html> 
