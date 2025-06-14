@@ -858,12 +858,12 @@
              }
              
              .slot-machine-container {
-                 margin: 5px; /* 마진 줄임 */
-                 padding: 5px; /* 패딩 줄임 */
+                 margin: 8px; /* 마진 적절히 조정 */
+                 padding: 8px; /* 패딩 적절히 조정 */
              }
              
              .slot-machine {
-                 padding: 15px; /* 패딩 줄임 */
+                 padding: 18px; /* 패딩 적절히 조정 */
                  border-radius: 15px;
              }
              
@@ -901,10 +901,13 @@
              }
              
              .result {
-                 min-height: 140px; /* 결과 영역 높이 더 줄임 */
-                 max-height: 140px;
-                 padding: 3px 10px; /* 패딩 더 줄임 */
+                 min-height: 160px; /* 결과 영역 높이 적절히 조정 */
+                 max-height: 160px;
+                 padding: 5px 15px; /* 패딩 적절히 조정 */
                  overflow-y: auto; /* 스크롤 허용 */
+                 display: flex;
+                 flex-direction: column;
+                 justify-content: space-between; /* 요소들을 균등하게 배치 */
              }
              
              .game-info {
@@ -929,16 +932,18 @@
              
              /* 당첨 메시지 크기 조정 */
              .win-message {
-                 font-size: 1.5em !important; /* 당첨 메시지 크기 더 줄임 */
-                 margin: 5px 0 !important; /* 마진 줄임 */
+                 font-size: 1.3em !important; /* 당첨 메시지 크기 조정 */
+                 margin: 3px 0 !important; /* 마진 최소화 */
+                 flex-shrink: 0; /* 축소 방지 */
              }
              
              /* 쿠폰 크기 조정 */
              .coupon {
-                 max-width: 250px !important; /* 쿠폰 크기 더 줄임 */
-                 min-height: 100px !important; /* 높이 더 줄임 */
-                 padding: 5px !important; /* 패딩 더 줄임 */
-                 margin: 5px auto !important; /* 마진 줄임 */
+                 max-width: 260px !important; /* 쿠폰 크기 적절히 조정 */
+                 min-height: 110px !important; /* 높이 적절히 조정 */
+                 padding: 6px !important; /* 패딩 적절히 조정 */
+                 margin: 2px auto !important; /* 마진 최소화 */
+                 flex-shrink: 0; /* 축소 방지 */
              }
              
              .coupon-header {
@@ -970,16 +975,21 @@
              
              /* 버튼 크기 조정 */
              .buttons {
-                 gap: 5px !important; /* 간격 더 줄임 */
-                 margin-top: 5px !important; /* 마진 더 줄임 */
-                 margin-bottom: 5px !important; /* 하단 마진 추가 */
+                 gap: 8px !important; /* 간격 적절히 조정 */
+                 margin-top: 3px !important; /* 상단 마진 최소화 */
+                 margin-bottom: 3px !important; /* 하단 마진 최소화 */
+                 flex-shrink: 0; /* 축소 방지 */
+                 display: flex !important;
+                 justify-content: center !important;
+                 align-items: center !important;
              }
              
              .button {
-                 padding: 5px 12px !important; /* 패딩 더 줄임 */
-                 font-size: 0.8em !important; /* 폰트 더 줄임 */
-                 border-radius: 8px !important; /* 모서리 더 줄임 */
-                 min-width: 60px !important; /* 최소 너비 설정 */
+                 padding: 6px 15px !important; /* 패딩 적절히 조정 */
+                 font-size: 0.85em !important; /* 폰트 적절히 조정 */
+                 border-radius: 10px !important; /* 모서리 적절히 조정 */
+                 min-width: 70px !important; /* 최소 너비 증가 */
+                 white-space: nowrap !important; /* 텍스트 줄바꿈 방지 */
              }
              
                            /* 레버 위치 조정 */
@@ -1027,21 +1037,25 @@
               }
               
               .result {
-                  min-height: 120px; /* 더 작은 화면에서 높이 더 줄임 */
-                  max-height: 120px;
-                  padding: 2px 8px; /* 패딩 더 줄임 */
+                  min-height: 140px; /* 더 작은 화면에서 높이 적절히 조정 */
+                  max-height: 140px;
+                  padding: 4px 12px; /* 패딩 적절히 조정 */
+                  display: flex;
+                  flex-direction: column;
+                  justify-content: space-between;
               }
               
               .game-info-list {
                   font-size: 0.8em;
               }
               
-              /* 작은 화면에서 쿠폰 더 축소 */
-              .coupon {
-                  max-width: 220px !important;
-                  min-height: 90px !important;
-                  padding: 4px !important;
-              }
+                             /* 작은 화면에서 쿠폰 더 축소 */
+               .coupon {
+                   max-width: 230px !important;
+                   min-height: 100px !important;
+                   padding: 5px !important;
+                   margin: 1px auto !important;
+               }
               
               .coupon-header {
                   font-size: 0.7em !important;
@@ -1063,10 +1077,11 @@
                   font-size: 0.55em !important;
               }
               
-              .button {
-                  padding: 4px 10px !important;
-                  font-size: 0.7em !important;
-              }
+                             .button {
+                   padding: 5px 12px !important;
+                   font-size: 0.75em !important;
+                   min-width: 65px !important;
+               }
           }
 
           /* 가로 모드 대응 */
