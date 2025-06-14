@@ -831,23 +831,30 @@
 
                  /* 반응형 디자인 - 모바일 최적화 */
          @media (max-width: 480px) {
-             body {
-                 padding: 2px; /* 전체 여백 더 줄임 */
+             html, body {
+                 height: 100%; /* 전체 높이 100% */
                  margin: 0; /* 마진 제거 */
+                 padding: 0; /* 패딩 제거 */
+                 overflow: hidden; /* 스크롤 제거 */
              }
              
              .game-container {
-                 min-height: calc(100vh - 4px); /* 화면 높이에 더 맞춤 */
-                 max-height: calc(100vh - 4px); /* 최대 높이 더 제한 */
+                 height: 100vh; /* 화면 높이 100% */
+                 min-height: 100vh; /* 최소 높이 100% */
+                 max-height: 100vh; /* 최대 높이 100% */
                  margin: 0; /* 마진 제거 */
-                 border-radius: 12px; /* 모서리 더 줄임 */
+                 padding: 0; /* 패딩 제거 */
+                 border-radius: 0; /* 모서리 제거로 공간 확보 */
                  overflow-y: auto; /* 세로 스크롤 허용 */
+                 display: flex; /* 플렉스 레이아웃 */
+                 flex-direction: column; /* 세로 방향 */
              }
              
              .header {
-                 padding: 6px; /* 헤더 패딩 더 줄임 */
-                 border-radius: 12px;
-                 margin-bottom: 3px; /* 하단 마진 추가 */
+                 padding: 8px; /* 헤더 패딩 적절히 조정 */
+                 border-radius: 0; /* 모서리 제거 */
+                 margin: 0; /* 마진 제거 */
+                 flex-shrink: 0; /* 축소 방지 */
              }
              
              .title {
@@ -861,13 +868,18 @@
              }
              
              .slot-machine-container {
-                 margin: 3px; /* 마진 더 줄임 */
-                 padding: 3px; /* 패딩 더 줄임 */
+                 margin: 0; /* 마진 제거 */
+                 padding: 5px; /* 패딩 최소화 */
+                 flex: 1; /* 남은 공간 차지 */
+                 display: flex; /* 플렉스 레이아웃 */
+                 flex-direction: column; /* 세로 방향 */
+                 justify-content: center; /* 세로 중앙 정렬 */
              }
              
              .slot-machine {
-                 padding: 12px; /* 패딩 더 줄임 */
-                 border-radius: 12px;
+                 padding: 10px; /* 패딩 적절히 조정 */
+                 border-radius: 15px; /* 모서리 복원 */
+                 margin: 0; /* 마진 제거 */
              }
              
              .jackpot-text {
@@ -905,13 +917,13 @@
              }
              
              .result {
-                 min-height: 140px; /* 결과 영역 높이 더 줄임 */
-                 max-height: 140px;
-                 padding: 3px 10px; /* 패딩 더 줄임 */
+                 flex-shrink: 0; /* 축소 방지 */
+                 padding: 5px 10px; /* 패딩 적절히 조정 */
                  overflow-y: auto; /* 스크롤 허용 */
                  display: flex;
                  flex-direction: column;
-                 justify-content: space-between; /* 요소들을 균등하게 배치 */
+                 justify-content: center; /* 중앙 정렬 */
+                 min-height: 0; /* 최소 높이 제거 */
              }
              
              .game-info {
@@ -1012,18 +1024,24 @@
 
           /* 더 작은 화면 (아이폰 SE 등) */
           @media (max-width: 375px) and (max-height: 667px) {
-              body {
-                  padding: 1px; /* 패딩 더 줄임 */
+              html, body {
+                  height: 100%; /* 전체 높이 100% */
+                  margin: 0;
+                  padding: 0;
+                  overflow: hidden;
               }
               
               .game-container {
-                  min-height: calc(100vh - 2px); /* 높이 더 최적화 */
-                  max-height: calc(100vh - 2px);
+                  height: 100vh; /* 화면 높이 100% */
+                  min-height: 100vh;
+                  max-height: 100vh;
+                  border-radius: 0; /* 모서리 제거 */
               }
               
               .header {
-                  padding: 4px; /* 헤더 패딩 더 줄임 */
-                  margin-bottom: 2px;
+                  padding: 6px; /* 헤더 패딩 적절히 조정 */
+                  margin: 0; /* 마진 제거 */
+                  border-radius: 0; /* 모서리 제거 */
               }
               
               .title {
@@ -1036,7 +1054,12 @@
               }
               
               .slot-machine {
-                  padding: 8px; /* 패딩 더 줄임 */
+                  padding: 8px; /* 패딩 적절히 조정 */
+                  margin: 0; /* 마진 제거 */
+              }
+              
+              .slot-machine-container {
+                  padding: 3px; /* 패딩 최소화 */
               }
               
               .jackpot-text {
@@ -1063,9 +1086,9 @@
               }
               
               .result {
-                  min-height: 120px; /* 결과 영역 높이 더 줄임 */
-                  max-height: 120px;
-                  padding: 2px 8px;
+                  padding: 3px 8px; /* 패딩 최소화 */
+                  min-height: 0; /* 최소 높이 제거 */
+                  max-height: none; /* 최대 높이 제거 */
               }
               
               .coupon {
