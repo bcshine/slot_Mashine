@@ -901,9 +901,10 @@
              }
              
              .result {
-                 min-height: 180px; /* 결과 영역 높이 줄임 */
-                 max-height: 180px;
-                 padding: 5px 15px;
+                 min-height: 140px; /* 결과 영역 높이 더 줄임 */
+                 max-height: 140px;
+                 padding: 3px 10px; /* 패딩 더 줄임 */
+                 overflow-y: auto; /* 스크롤 허용 */
              }
              
              .game-info {
@@ -928,51 +929,57 @@
              
              /* 당첨 메시지 크기 조정 */
              .win-message {
-                 font-size: 2em !important; /* 당첨 메시지 크기 줄임 */
+                 font-size: 1.5em !important; /* 당첨 메시지 크기 더 줄임 */
+                 margin: 5px 0 !important; /* 마진 줄임 */
              }
              
              /* 쿠폰 크기 조정 */
              .coupon {
-                 max-width: 280px !important; /* 쿠폰 크기 줄임 */
-                 min-height: 120px !important;
-                 padding: 8px !important;
+                 max-width: 250px !important; /* 쿠폰 크기 더 줄임 */
+                 min-height: 100px !important; /* 높이 더 줄임 */
+                 padding: 5px !important; /* 패딩 더 줄임 */
+                 margin: 5px auto !important; /* 마진 줄임 */
              }
              
              .coupon-header {
-                 font-size: 0.9em !important;
-                 margin-bottom: 3px !important;
+                 font-size: 0.8em !important; /* 폰트 더 줄임 */
+                 margin-bottom: 2px !important;
              }
              
              .coupon-main-title {
-                 font-size: 1.1em !important;
-                 margin: 3px 0 !important;
+                 font-size: 1em !important; /* 폰트 더 줄임 */
+                 margin: 2px 0 !important;
              }
              
              .coupon-code-section {
-                 font-size: 0.8em !important;
-                 margin: 3px 0 !important;
+                 font-size: 0.7em !important; /* 폰트 더 줄임 */
+                 margin: 2px 0 !important;
+                 padding: 2px !important;
              }
              
              .coupon-validity {
-                 font-size: 0.7em !important;
-                 margin: 3px 0 !important;
+                 font-size: 0.6em !important; /* 폰트 더 줄임 */
+                 margin: 2px 0 !important;
+                 line-height: 1.2 !important;
              }
              
              .coupon-footer {
-                 font-size: 0.7em !important;
-                 margin-top: 3px !important;
+                 font-size: 0.6em !important; /* 폰트 더 줄임 */
+                 margin-top: 2px !important;
              }
              
              /* 버튼 크기 조정 */
              .buttons {
-                 gap: 8px !important;
-                 margin-top: 10px !important;
+                 gap: 5px !important; /* 간격 더 줄임 */
+                 margin-top: 5px !important; /* 마진 더 줄임 */
+                 margin-bottom: 5px !important; /* 하단 마진 추가 */
              }
              
              .button {
-                 padding: 6px 15px !important;
-                 font-size: 0.9em !important;
-                 border-radius: 10px !important;
+                 padding: 5px 12px !important; /* 패딩 더 줄임 */
+                 font-size: 0.8em !important; /* 폰트 더 줄임 */
+                 border-radius: 8px !important; /* 모서리 더 줄임 */
+                 min-width: 60px !important; /* 최소 너비 설정 */
              }
              
                            /* 레버 위치 조정 */
@@ -1020,12 +1027,45 @@
               }
               
               .result {
-                  min-height: 150px;
-                  max-height: 150px;
+                  min-height: 120px; /* 더 작은 화면에서 높이 더 줄임 */
+                  max-height: 120px;
+                  padding: 2px 8px; /* 패딩 더 줄임 */
               }
               
               .game-info-list {
                   font-size: 0.8em;
+              }
+              
+              /* 작은 화면에서 쿠폰 더 축소 */
+              .coupon {
+                  max-width: 220px !important;
+                  min-height: 90px !important;
+                  padding: 4px !important;
+              }
+              
+              .coupon-header {
+                  font-size: 0.7em !important;
+              }
+              
+              .coupon-main-title {
+                  font-size: 0.9em !important;
+              }
+              
+              .coupon-code-section {
+                  font-size: 0.6em !important;
+              }
+              
+              .coupon-validity {
+                  font-size: 0.55em !important;
+              }
+              
+              .coupon-footer {
+                  font-size: 0.55em !important;
+              }
+              
+              .button {
+                  padding: 4px 10px !important;
+                  font-size: 0.7em !important;
               }
           }
 
@@ -1352,8 +1392,8 @@
                             {showResult && result && result.isWin && (
                                 <div style={{
                                     textAlign: 'center',
-                                    marginTop: '15px',
-                                    fontSize: '1.8em',
+                                    marginTop: '8px',
+                                    fontSize: '1.3em',
                                     fontWeight: '900',
                                     color: '#FFFFFF',
                                     fontFamily: 'Noto Sans KR, sans-serif',
@@ -1370,10 +1410,10 @@
                                         if (result.reward.includes('천원할인')) return 'linear-gradient(45deg, #9370DB, #8A2BE2)'; // 보라색
                                         return 'linear-gradient(45deg, #FFD700, #FFA500)'; // 기본 골드
                                     })(),
-                                    padding: '10px 20px',
-                                    borderRadius: '15px',
-                                    border: '3px solid #FFFFFF',
-                                    boxShadow: '0 5px 15px rgba(0,0,0,0.4)',
+                                    padding: '6px 12px',
+                                    borderRadius: '10px',
+                                    border: '2px solid #FFFFFF',
+                                    boxShadow: '0 3px 10px rgba(0,0,0,0.4)',
                                     animation: 'winMessagePulse 1s ease-in-out infinite alternate'
                                 }}>
                                     🎊 {result.reward} 당첨 🎊
